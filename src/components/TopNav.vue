@@ -1,26 +1,28 @@
 <script setup>
 
 import NavText from './NavText.vue'
+
 defineProps({
   isDarkMode: Boolean,
+  section: String,
 })
 
 </script>
 <template>
-  <div class="fixed top-0 left-0 w-screen h-[100px] 
+  <div class="fixed top-0 left-0 w-screen h-16
     bg-gradient-to-r 
-    from-[rgba(21,90,252,0.8)] from-0% 
-    via-[rgba(21,90,252,0.3)] via-50% 
+    from-[rgba(21,90,252,0.7)] from-0% 
+    via-[rgba(21,90,252,0.4)] via-50% 
     to-[rgba(110,60,255,0.5)] to-100% 
     z-20
-    flex items-center justify-between pl-5 pr-10 py-5">
-    <img src=".././assets/Logo.png" class="h-[50px]" />
-    <NavText :is-active="true">START HERE</NavText>
-    <NavText :is-active="true">WHAT WE DO?</NavText>
-    <NavText :is-active="false">WHO WE ARE</NavText>
-    <NavText :is-active="true">CONTACT US</NavText>
+    flex items-center justify-between pl-5 pr-10 py-2">
+    <img @click="$emit('changeSection', 'startSection')" src=".././assets/Logo.png" class="h-[35px] cursor-pointer" />
+    <NavText @click="$emit('changeSection', 'startSection')" :is-active="section === 'startSection'">START HERE</NavText>
+    <NavText @click="$emit('changeSection', 'whatSection')" :is-active="section === 'whatSection'">WHAT WE DO?</NavText>
+    <NavText @click="$emit('changeSection', 'whoSection')" :is-active="section === 'whoSection'">WHO WE ARE</NavText>
+    <NavText @click="$emit('changeSection', 'contactSection')" :is-active="section === 'contactSection'">CONTACT US</NavText>
     <svg v-if="!isDarkMode" width="57" height="57" viewBox="0 0 57 57" fill="none" xmlns="http://www.w3.org/2000/svg"
-      class="w-16 h-16 fill-current text-white hover:text-custom-light-gray" @click="$emit('toggleDarkMode')">
+      class="w-16 h-16 fill-current text-white hover:text-custom-light-gray cursor-pointer" @click="$emit('toggleDarkMode')">
       <g filter="url(#filter0_d_68_697)">
         <path
           d="M35.4764 28.5C35.4764 32.3531 32.3528 35.4767 28.4997 35.4767C24.6465 35.4767 21.5229 32.3531 21.5229 28.5C21.5229 24.6468 24.6465 21.5233 28.4997 21.5233C32.3528 21.5233 35.4764 24.6468 35.4764 28.5Z"
@@ -45,7 +47,7 @@ defineProps({
       </defs>
     </svg>
     <svg v-else width="57" height="57" viewBox="0 0 57 57" fill="none" xmlns="http://www.w3.org/2000/svg"
-      class="w-16 h-16 fill-current text-white hover:text-custom-light-gray" @click="$emit('toggleDarkMode')">
+      class="w-12 h-12 m-2 fill-current text-white hover:text-custom-light-gray cursor-pointer" @click="$emit('toggleDarkMode')">
       <g filter="url(#filter0_d_44_769)">
         <path
           d="M28.5 41C35.4035 41 41 35.4035 41 28.5C41 27.9216 40.1331 27.826 39.834 28.321C38.4111 30.6757 35.8269 32.25 32.875 32.25C28.3876 32.25 24.75 28.6124 24.75 24.125C24.75 21.1731 26.3243 18.5888 28.679 17.166C29.174 16.8668 29.0784 16 28.5 16C21.5964 16 16 21.5964 16 28.5C16 35.4035 21.5964 41 28.5 41Z"
@@ -66,11 +68,5 @@ defineProps({
         </filter>
       </defs>
     </svg>
-
-
-    <!-- <button @click="$emit('toggleDarkMode', 1)"
-      class=" py-2 font-semibold text-sm rounded bg-blue-500 text-white hover:bg-blue-700 dark:bg-yellow-500 dark:text-black dark:hover:bg-yellow-700 transition-colors duration-300">
-      {{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}
-    </button> -->
   </div>
 </template>
