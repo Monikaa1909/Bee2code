@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 import TopNav from './components/TopNav.vue'
 
 const isDarkMode = ref(false);
