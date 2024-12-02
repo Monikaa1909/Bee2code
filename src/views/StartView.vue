@@ -5,6 +5,9 @@ import TopNav from '../components/TopNav.vue'
 import WhoWeAre_1 from '@/components/WhoWeAre_1.vue'
 import WhatWeDo from '@/components/WhatWeDo.vue'
 import StartHere from '@/components/StartHere.vue'
+import WhoWeAre_2 from '@/components/WhoWeAre_2.vue'
+import BeeInspired from '@/components/BeeInspired.vue'
+import ContactUs from '@/components/ContactUs.vue'
 
 const isDarkMode = ref(window.matchMedia('(prefers-color-scheme: dark)').matches)
 isDarkMode.value = false
@@ -49,20 +52,15 @@ function changeSection(targetSection) {
 
 <template>
   <div class="relative h-full w-full bg-cover bg-fixed text-custom-dark-gray" v-bind="backgroundStyle">
-    <!-- <TopNav @toggle-dark-mode="toggleDarkMode" @change-section="changeSection" :is-dark-mode="isDarkMode"
-      :section="section" /> -->
+    <TopNav @toggle-dark-mode="toggleDarkMode" @change-section="changeSection" :is-dark-mode="isDarkMode"
+      :section="section" />
     <div class="pt-16">
       <StartHere id="startSection"></StartHere>
       <WhatWeDo id="whatSection"/>
-      <WhoWeAre_1 id="whoSection"></WhoWeAre_1>
-
-      <!-- <div class="flex items-center justify-center h-screen bg-gray-600 bg-opacity-50 w-full">
-        <div class="text-center text-white px-4">
-          <h2 class="text-3xl font-bold">Komponent 3</h2>
-          <RouterLink to="/pocemons">Home</RouterLink>
-          <p class="mt-4 text-lg">To trzecia część strony, również wyśrodkowana.</p>
-        </div>
-      </div> -->
+      <WhoWeAre_1 id="whoSection"/>
+      <WhoWeAre_2></WhoWeAre_2>
+      <BeeInspired/>
+      <ContactUs id="contactSection"/>
     </div>
 
   </div>

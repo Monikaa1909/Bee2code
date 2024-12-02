@@ -32,6 +32,7 @@ export default {
       textShadow: {
         sm: '0 0 8px rgba(0, 0, 0, 0.15)',
         md: '0px 0px 6px rgba(0, 0, 0, 0.5)',
+        lg: '0px 0px 16px rgba(0, 0, 0, 0.5)',
       },
     },
   },
