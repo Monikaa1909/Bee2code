@@ -89,7 +89,7 @@ onUnmounted(() => {
         <MenuElement @click="changeSection('whoSection')">WHO WE ARE</MenuElement>
         <MenuElement @click="changeSection('contactSection')">CONTACT US</MenuElement>
     </div>
-    <div class="pt-16">
+    <div class="w-full pt-16">
       <StartHere id="startSection"></StartHere>
       <WhatWeDo id="whatSection" />
       <WhoWeAre_1 id="whoSection" />

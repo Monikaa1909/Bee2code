@@ -9,7 +9,7 @@ function redirectTo(link) {
 
 <template>
   <div
-    class="flex flex-col md:flex-row items-center justify-between w-full h-auto md:h-44 px-2 sm:px-10 md:py-0 pt-20 gap-10 md:gap-40
+    class="flex flex-col sm:flex-row items-center justify-between w-full h-auto md:h-44 px-2 sm:px-10 md:py-0 pt-20 gap-10 md:gap-40
       bg-gradient-to-r 
       from-[rgba(0,0,0,1)] from-0% 
       via-[rgba(0,0,0,0.5)] via-50% 
@@ -17,7 +17,7 @@ function redirectTo(link) {
       shadow-small-box dark:shadow-small-box-dark"
   >
     <img class="max-h-10" src=".././assets/logo.png" />
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="w-full flex flex-col sm:flex-row items-center justify-end gap-4">
       <SocialMedia @click="redirectTo('https://www.facebook.com/bee2code/')">
         <template v-slot:icon>
           <img class="h-12" src="./icons/fb_icon.svg" />
