@@ -1,16 +1,39 @@
 <script setup>
 
-defineProps({
-  isLeft: Boolean
-})
+import WhatWeDoElement from './WhatWeDoElement.vue'
 
 </script>
-<template>
 
-  <div class="flex flex-col gap-2.5 px-24"
-    :class="{ 'items-end': isLeft }">
-    <p class="text-base font-semibold tracking-30 dark:text-white"><slot name="part1"></slot></p>
-    <p id="targetP" class="text-3xl font-semibold tracking-20 bg-clip-text text-transparent bg-gradient-to-r from-custom-blue to-custom-purple text-shadow-sm"><slot name="part2"></slot></p>
-    <p class="text-base font-light tracking-10 text-justify dark:text-white"><slot name="part3"></slot></p>
+<template>
+  <div class="w-full mx-auto flex flex-col items-center justify-center gap-10 pt-4 pb-24">
+    <WhatWeDoElement :is-left="false">
+      <template v-slot:part1>Expertise Rooted in the Origins of IT</template>
+      <template v-slot:part2>TECHNOLOGIES AND PROGRAMMING</template>
+      <template v-slot:part3>At Bee2code, we are proficient in nearly all key programming technologies. We combine
+        decades of experience with the latest trends in software development. Our team grows alongside the evolution
+        of
+        IT, delivering solutions based on the most up-to-date programming languages. See how we can support your
+        project!</template>
+    </WhatWeDoElement>
+    <WhatWeDoElement :is-left="true">
+      <template v-slot:part1>From Concept to Final Solution</template>
+      <template v-slot:part2>APPLICATION DESIGN</template>
+      <template v-slot:part3>At bee2code, we excel at creating applications from scratch. This allows us to apply
+        our
+        expertise right from the conceptualization and design stages. We choose tools tailored to each project, from
+        UML
+        diagrams to user stories, adapting to the needs of both large-scale and smaller applications. Trust us to
+        bring
+        your idea to life!</template>
+    </WhatWeDoElement>
+    <WhatWeDoElement :is-left="false">
+      <template v-slot:part1>Crafting Solutions for Every Device</template>
+      <template v-slot:part2>RESPONSIVE WEB DESIGN</template>
+      <template v-slot:part3>At bee2code, we ensure our solutions work seamlessly on both desktop and mobile
+        devices. We
+        collaborate with UX experts to deliver exceptional user experiences. Whenever possible, we also offer native
+        versions of mobile applications. We create websites and apps that adapt to users' needs—anytime,
+        anywhere!</template>
+    </WhatWeDoElement>
   </div>
 </template>
