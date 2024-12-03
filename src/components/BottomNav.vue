@@ -16,7 +16,7 @@ function redirectTo(link) {
       to-[rgba(0,0,0,1)] to-100%
       shadow-small-box dark:shadow-small-box-dark"
   >
-    <img class="max-h-10" src=".././assets/logo.png" />
+    <img @click="$emit('changeSection', 'startSection')" class="max-h-10 cursor-pointer" src=".././assets/logo.png" />
     <div class="w-full flex flex-col sm:flex-row items-center justify-end gap-4">
       <SocialMedia @click="redirectTo('https://www.facebook.com/bee2code/')">
         <template v-slot:icon>

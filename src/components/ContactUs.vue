@@ -1,13 +1,22 @@
 <script setup>
-import BottomNav from './BottomNav.vue';
+import BottomNav from './BottomNav.vue'
 
+defineProps({
+  section: String,
+})
+
+const emit = defineEmits()
+
+const handleChangeSection = (section) => {
+  emit('changeSection', section)
+}
 
 </script>
 
 <template>
   <div class="flex flex-col justify-center items-center w-full">
     <div
-      class="bg-white md:h-80 w-[calc(100%-8px)] md:w-[664px] -mb-10 z-10 rounded-t-3xl shadow-small-box dark:shadow-small-box-dark">
+      class="bg-custom-light-gray md:h-80 w-[calc(100%-8px)] md:w-[664px] -mb-10 z-10 rounded-t-3xl shadow-small-box dark:shadow-small-box-dark">
       <div class="flex flex-col md:flex-row w-full h-full p-4 sm:p-10 gap-10 md:gap-10">
         <div class="flex-1 flex flex-col items-center justify-start gap-5 w-full">
           <p class="w-full break-words text-3xl font-semibold tracking-20">CONTACT US!</p>
@@ -50,6 +59,6 @@ import BottomNav from './BottomNav.vue';
         </div>
       </div>
     </div>
-    <BottomNav />
+    <BottomNav @change-section="handleChangeSection" />
   </div>
 </template>

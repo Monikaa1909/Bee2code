@@ -1,6 +1,6 @@
 <script setup>
 
-import ModeSwitcher from './ModeSwitcher.vue';
+import ModeSwitcher from './ModeSwitcher.vue'
 import NavText from './NavText.vue'
 
 defineProps({
@@ -12,7 +12,7 @@ const emit = defineEmits()
 
 const handleToggleDarkMode = () => {
   emit('notifyToggleDarkMode')
-};
+}
 
 </script>
 
@@ -58,7 +58,6 @@ const handleToggleDarkMode = () => {
           </filter>
         </defs>
       </svg>
-
       <ModeSwitcher :is-dark-mode="isDarkMode" @toggle-dark-mode="handleToggleDarkMode" />
     </div>
   </div>

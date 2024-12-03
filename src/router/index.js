@@ -10,7 +10,7 @@ const router = createRouter({
       component: StartView,
     },
     {
-      path: '/pocemons',
+      path: '/example/home',
       name: 'pocemons',
       component: () => import('../views/PocemonHomeView.vue'),
     },
