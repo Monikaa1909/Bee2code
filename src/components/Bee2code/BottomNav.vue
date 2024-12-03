@@ -16,11 +16,11 @@ function redirectTo(link) {
       to-[rgba(0,0,0,1)] to-100%
       shadow-small-box dark:shadow-small-box-dark"
   >
-    <img @click="$emit('changeSection', 'startSection')" class="max-h-10 cursor-pointer" src=".././assets/logo.png" />
+    <img @click="$emit('changeSection', 'startSection')" class="max-h-10 cursor-pointer" src="../.././assets/logo.png" />
     <div class="w-full flex flex-col sm:flex-row items-center justify-end gap-4">
       <SocialMedia @click="redirectTo('https://www.facebook.com/bee2code/')">
         <template v-slot:icon>
-          <img class="h-12" src="./icons/fb_icon.svg" />
+          <img class="h-12" src=".././icons/fb_icon.svg" />
         </template>
         <template v-slot:social>
           Bee2code
@@ -28,7 +28,7 @@ function redirectTo(link) {
       </SocialMedia>
       <SocialMedia @click="redirectTo('https://www.facebook.com/bee2code/')">
         <template v-slot:icon>
-          <img class="h-12" src="./icons/ig_icon.svg" />
+          <img class="h-12" src=".././icons/ig_icon.svg" />
         </template>
         <template v-slot:social>
           Bee2code

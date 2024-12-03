@@ -1,14 +1,14 @@
 <script setup>
 
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import TopNav from '../components/TopNav.vue'
-import WhoWeAre_1 from '@/components/WhoWeAre_1.vue'
-import WhatWeDo from '@/components/WhatWeDo.vue'
-import StartHere from '@/components/StartHere.vue'
-import WhoWeAre_2 from '@/components/WhoWeAre_2.vue'
-import BeeInspired from '@/components/BeeInspired.vue'
-import ContactUs from '@/components/ContactUs.vue'
-import MenuElement from '@/components/MenuElement.vue'
+import TopNav from '../components/Bee2code/TopNav.vue'
+import WhoWeAre_1 from '@/components/Bee2code/WhoWeAre_1.vue'
+import WhatWeDo from '@/components/Bee2code/WhatWeDo.vue'
+import StartHere from '@/components/Bee2code/StartHere.vue'
+import WhoWeAre_2 from '@/components/Bee2code/WhoWeAre_2.vue'
+import BeeInspired from '@/components/Bee2code/BeeInspired.vue'
+import ContactUs from '@/components/Bee2code/ContactUs.vue'
+import MenuElement from '@/components/Bee2code/MenuElement.vue'
 
 const isDarkMode = ref(window.matchMedia('(prefers-color-scheme: dark)').matches)
 isDarkMode.value = false

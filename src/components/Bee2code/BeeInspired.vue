@@ -6,7 +6,7 @@ const router = useRouter()
 
 
 function seeExample() {
-  router.push('/pocemons')
+  router.push('/example/home')
 }
 
 </script>

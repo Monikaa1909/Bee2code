@@ -24,7 +24,7 @@ const handleToggleDarkMode = () => {
     to-[rgba(0,0,0,0.7)] to-100%
     z-20
     flex items-center justify-center sm:justify-between sm:pl-5 sm:pr-5 gap-5 px-2 py-2">
-    <img @click="$emit('changeSection', 'startSection')" src=".././assets/Logo.png" class="max-h-[35px] sm:h-[35px] cursor-pointer" />
+    <img @click="$emit('changeSection', 'startSection')" src="../.././assets/Logo.png" class="max-h-[35px] sm:h-[35px] cursor-pointer" />
     <div class="lg:flex items-center justify-between w-full hidden">
       <NavText @click="$emit('changeSection', 'startSection')" :is-active="section === 'startSection'">START HERE
       </NavText>
