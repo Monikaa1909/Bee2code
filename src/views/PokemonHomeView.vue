@@ -1,5 +1,8 @@
 <script setup>
+import Comparison from '@/components/pokemon/Comparison.vue'
 import Modal from '@/components/pokemon/Modal.vue'
+import Search from '@/components/pokemon/Search.vue'
+
 import { ref, onMounted, computed, watch } from 'vue'
 
 const isModalOpen = ref(false)
@@ -22,6 +25,7 @@ const loading = ref(false)
 const searchQuery = ref('')
 
 const loadPokemon = async (page) => {
+  console.log("Wywołanie load pokemons")
   if (page < 1) return
   loading.value = true
   const offset = (page - 1) * 20
@@ -33,13 +37,15 @@ const loadPokemon = async (page) => {
     pokemon.value = await Promise.all(data.results.map(async (pokemon) => {
       const pokemonData = await fetch(pokemon.url).then(res => res.json())
 
-      const types = pokemonData.types.map(t => t.type.name)
-      const abilities = pokemonData.abilities.map(a => a.ability.name)
+      const types = pokemonData.types.map(t => t.type.name.toUpperCase())
+      const abilities = pokemonData.abilities.map(a => a.ability.name.toUpperCase())
+      const imageUrl = pokemonData.sprites.front_default
 
       return {
-        name: pokemon.name,
+        name: pokemon.name.toUpperCase(),
         types,
         abilities,
+        image: imageUrl,
       }
     }))
   } catch (error) {
@@ -48,14 +54,9 @@ const loadPokemon = async (page) => {
     loading.value = false
     currentPage.value = page
   }
-};
+}
 
 onMounted(() => {
-  loadPokemon(currentPage.value)
-})
-
-watch(searchQuery, () => {
-  currentPage.value = 1
   loadPokemon(currentPage.value)
 })
 
@@ -83,19 +84,33 @@ function addPokemonToCompare(pokemon) {
 
 function deletePokemonToCompare(pokemon) {
   const index = pokemonToCompare.value.findIndex(p => p.name === pokemon.name);
-  if (index !== -1) { // Sprawdź, czy Pokémon istnieje w tablicy
-    pokemonToCompare.value.splice(index, 1); // Usuń jeden element od znalezionego indeksu
+  if (index !== -1) { 
+    pokemonToCompare.value.splice(index, 1)
   }
 }
 
+function compare() {
+  console.log("Porównaj")
+}
 
 </script>
 
 <template>
-  <div>
-    <!-- Pole wyszukiwania -->
-    <input type="text" v-model="searchQuery" class="mb-4 p-2 border rounded w-full"
-      placeholder="Szukaj pokémona po nazwie..." />
+  <div class="bg-[#111111] relative h-full w-full p-4 sm:p-24 text-white">
+
+    <Comparison @compare="compare" @delete-pokemon="deletePokemonToCompare"  :pokemon-to-compare="pokemonToCompare">
+        <template v-slot:counter>{{ pokemonToCompare.length }}</template>
+    </Comparison>
+      
+    <p class="p-24 text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm w-full break-words pb-24">
+      WATCH AND COMPARE POKEMON
+    </p>
+
+    <div class="w-full flex items-center justify-between pb-12">
+      <Search v-model:modelValue="searchQuery"/>
+    </div>
+
+    
 
     <!-- Pagination -->
     <div class="pagination mb-4">
@@ -108,15 +123,7 @@ function deletePokemonToCompare(pokemon) {
       </button>
     </div>
 
-    <div>
-       <p>POKEMONY DO PORÓWNANIA: </p>
-       <div v-for="pokemon in pokemonToCompare">
-        <p>{{ pokemon.name }}</p>
-        <button @click="deletePokemonToCompare(pokemon)">Usuń</button>
-       </div>   
-       <p>Łącznie: {{ pokemonToCompare.length }}</p>
-    </div>
-
+    
     <!-- Tabela Pokémonów -->
     <table class="table-auto w-full border-collapse">
       <thead>
@@ -129,13 +136,15 @@ function deletePokemonToCompare(pokemon) {
       </thead>
       <tbody>
         <tr v-for="pokemon in filteredPokemon" :key="pokemon.name">
-          <td>{{ pokemon.name }}</td>
+          <td>{{ pokemon.name }}
+            <img class="":src="pokemon.image"/>
+          </td>
           <td @click="openModal('ALL TYPES', pokemon.types)">{{ pokemon.types[0] }} {{ pokemon.types.length - 1 }}</td>
           <td @click="openModal('ALL ABILITIES', pokemon.abilities)">{{ pokemon.abilities[0] }} {{
             pokemon.abilities.length - 1 }}</td>
           <td>
             <button>szczegóły</button>
-            <button @click="addPokemonToCompare(pokemon)">dodaj pokemona</button>
+            <button id="comparasion3" @click="addPokemonToCompare(pokemon)">dodaj pokemona</button>
           </td>
         </tr>
       </tbody>

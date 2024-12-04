@@ -33,6 +33,7 @@ export default {
         sm: '0 0 8px rgba(0, 0, 0, 0.15)',
         md: '0px 0px 6px rgba(0, 0, 0, 0.5)',
         lg: '0px 0px 16px rgba(0, 0, 0, 0.5)',
+        'blue-sm': '0 0 16px rgba(21, 95, 252, 0.22)'
       },
     },
   },
