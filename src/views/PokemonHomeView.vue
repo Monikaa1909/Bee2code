@@ -2,6 +2,7 @@
 import Comparison from '@/components/pokemon/Comparison.vue'
 import Modal from '@/components/pokemon/Modal.vue'
 import Search from '@/components/pokemon/Search.vue'
+import SmallButton from '@/components/pokemon/SmallButton.vue';
 
 import { ref, onMounted, computed, watch } from 'vue'
 
@@ -78,13 +79,13 @@ watch(filteredPokemon, (newFilteredPokemon) => {
 const pokemonToCompare = ref([])
 
 function addPokemonToCompare(pokemon) {
-  if (pokemonToCompare.value.length >= 2) return 
+  if (!isAddingActive(pokemon)) return
   else pokemonToCompare.value.push(pokemon)
 }
 
 function deletePokemonToCompare(pokemon) {
   const index = pokemonToCompare.value.findIndex(p => p.name === pokemon.name);
-  if (index !== -1) { 
+  if (index !== -1) {
     pokemonToCompare.value.splice(index, 1)
   }
 }
@@ -93,24 +94,30 @@ function compare() {
   console.log("Porównaj")
 }
 
+function isAddingActive(pokemon) {
+  if (pokemonToCompare.value.length === 2 || pokemonToCompare.value.some(item => item.name === pokemon.name)) return false
+  return true
+}
+
 </script>
 
 <template>
-  <div class="bg-[#111111] relative h-full w-full p-4 sm:p-24 text-white">
+  <div class="bg-[#111111] relative h-full w-full p-4 md:p-24 xl:p-64 text-white">
 
-    <Comparison @compare="compare" @delete-pokemon="deletePokemonToCompare"  :pokemon-to-compare="pokemonToCompare">
-        <template v-slot:counter>{{ pokemonToCompare.length }}</template>
+    <Comparison @compare="compare" @delete-pokemon="deletePokemonToCompare" :pokemon-to-compare="pokemonToCompare">
+      <template v-slot:counter>{{ pokemonToCompare.length }}</template>
     </Comparison>
-      
-    <p class="p-24 text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm w-full break-words pb-24">
+
+    <p
+      class="p-24 text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm w-full break-words pb-24">
       WATCH AND COMPARE POKEMON
     </p>
 
     <div class="w-full flex items-center justify-between pb-12">
-      <Search v-model:modelValue="searchQuery"/>
+      <Search v-model:modelValue="searchQuery" />
     </div>
 
-    
+
 
     <!-- Pagination -->
     <div class="pagination mb-4">
@@ -123,32 +130,52 @@ function compare() {
       </button>
     </div>
 
-    
-    <!-- Tabela Pokémonów -->
-    <table class="table-auto w-full border-collapse">
-      <thead>
-        <tr>
-          <th class="border px-4 py-2">NAMES</th>
-          <th class="border px-4 py-2">TYPES</th>
-          <th class="border px-4 py-2">ABILITIES</th>
-          <th class="border px-4 py-2">ACTIONS</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="pokemon in filteredPokemon" :key="pokemon.name">
-          <td>{{ pokemon.name }}
-            <img class="":src="pokemon.image"/>
-          </td>
-          <td @click="openModal('ALL TYPES', pokemon.types)">{{ pokemon.types[0] }} {{ pokemon.types.length - 1 }}</td>
-          <td @click="openModal('ALL ABILITIES', pokemon.abilities)">{{ pokemon.abilities[0] }} {{
-            pokemon.abilities.length - 1 }}</td>
-          <td>
-            <button>szczegóły</button>
-            <button id="comparasion3" @click="addPokemonToCompare(pokemon)">dodaj pokemona</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div
+      class="grid grid-cols-4 w-full bg-gradient-to-r from-custom-blue/50 to-custom-purple/50 shadow-blue-sm bg-opacity-50 rounded-lg py-4">
+      <div class="text-center text-sm font-semibold tracking-10">NAMES</div>
+      <div class="text-center text-sm font-semibold tracking-10">TYPES</div>
+      <div class="text-center text-sm font-semibold tracking-10">ABILITIES</div>
+      <div class="text-center text-sm font-semibold tracking-10">ACTIONS</div>
+    </div>
+
+    <div v-for="pokemon in filteredPokemon" :key="pokemon.name"
+      class="grid grid-cols-4 items-center border-b-[0.7px] border-b-custom-blue/50">
+
+      <div class="flex items-center justify-center gap-2">
+        <img class="h-10 w-10" :src="pokemon.image" />
+        <p class="text-center text-lg font-light tracking-10">{{ pokemon.name }}</p>
+      </div>
+
+      <div class="flex items-center justify-center gap-2">
+        <p class="text-center text-lg font-light tracking-10 min-w-20">{{ pokemon.types[0] }}</p>
+        <SmallButton :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
+          @click="openModal('ALL TYPES', pokemon.types)">{{ pokemon.types.length - 1 }}</SmallButton>
+      </div>
+
+      <div class="flex items-center justify-center gap-2">
+        <p class="text-center text-lg font-light tracking-10 min-w-20">{{ pokemon.abilities[0] }}</p>
+        <SmallButton :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
+          @click="openModal('ALL ABILITIES', pokemon.abilities)">{{ pokemon.abilities.length - 1 }}</SmallButton>
+      </div>
+
+      <div class="flex flex-col items-center justify-center gap-1 py-2">
+        <SmallButton class="w-28">DETAILS</SmallButton>
+        <!-- <SmallButton :class="{ 'cursor-default bg-custom-dark-gray hover:bg-custom-dark-gray': !isAddingActive(pokemon) }"
+          class="  " @click="addPokemonToCompare(pokemon)">ADD POKEMON
+        </SmallButton> -->
+
+        <button @click="addPokemonToCompare(pokemon)"
+        :class="{ 'cursor-default bg-custom-dark-gray hover:bg-custom-dark-gray': !isAddingActive(pokemon) }"
+          class="comparasion3 w-28 bg-custom-blue/50 hover:bg-custom-blue/70 py-1 px-2 rounded-md shadow-blue-sm">
+          <p class="text-xs font-light">
+            ADD POKEMON
+          </p>
+        </button>
+      </div>
+    </div>
+
+   
+
 
     <Modal @close-modal="closeModal" :type-of-data="typeOfData" :pokemon-data="pokemonData" v-if="isModalOpen"></Modal>
 

@@ -15,19 +15,22 @@ const isVisible = ref(false)
 const isDeleting = ref(false)
 
 const closeOnClickOutside = (event) => {
-  if (isDeleting && props.pokemonToCompare.length > 0) return
+  if (isDeleting.value) {
+    isDeleting.value = false
+    if(props.pokemonToCompare.length > 1) return
+  }
 
   const comparisonButton = document.getElementById('comparasion1')
-  const comparisonDiv = document.getElementById('comparasion2')
-  const comparisonButton2 = document.getElementById('comparasion3')
+  // const comparisonDiv = document.querySelectorAll('.comparasion2')
+  const comparisonButton2 = document.querySelectorAll('.comparasion3')
 
   if (
     comparisonButton &&
-    comparisonDiv &&
+    // comparisonDiv &&
     comparisonButton2 &&
     !comparisonButton.contains(event.target) &&
-    !comparisonDiv.contains(event.target) &&
-    !comparisonButton2.contains(event.target)
+    // !!Array.from(comparisonDiv).some(button => button.contains(event.target)) &&
+    !Array.from(comparisonButton2).some(button => button.contains(event.target))
   ) {
     isVisible.value = false
   }
@@ -43,13 +46,14 @@ onUnmounted(() => {
 
 function handleDeletePokemon(pokemon) {
   isDeleting.value = true
+  if (props.pokemonToCompare.length == 1) isVisible.value = false 
   emit('delete-pokemon', pokemon)
 }
 
 watch(
   () => isVisible.value,
   (newPokemonToCompare) => {
-    console.log(newPokemonToCompare)
+    // console.log(newPokemonToCompare)
   },
   { immediate: true }
 )
@@ -58,15 +62,15 @@ watch(
 
 <template>
   <button id="comparasion1" @click="isVisible = !isVisible" :disabled="pokemonToCompare.length === 0"
-    :class="{ 'bg-custom-dark-gray': pokemonToCompare.length === 0, 'bg-gradient-to-r from-custom-blue/50 to-custom-purple/50 hover:from-custom-blue/70 hover:to-custom-purple/70': pokemonToCompare.length > 0, 'bg-gradient-to-r from-custom-blue/70 to-custom-purple/70': isVisible }"
-    class="fixed top-4 right-4  py-2 px-4 rounded-lg shadow-blue-sm  flex flex-row pb-2">
+    :class="{ 'bg-custom-dark-gray': pokemonToCompare.length === 0, 'bg-gradient-to-r from-custom-blue/50 to-custom-purple/50 hover:from-custom-blue/70 hover:to-custom-purple/70 shadow-blue-sm': pokemonToCompare.length > 0, 'bg-gradient-to-r from-custom-blue/70 to-custom-purple/70': isVisible }"
+    class="fixed top-4 right-4  py-2 px-4 rounded-lg  flex flex-row pb-2">
     <p class="text-base font-semibold tracking-10 pr-2">POKEMON TO COMPARE:</p>
     <p class="text-base font-semibold tracking-10 pr-2">
       <slot name="counter"></slot>
     </p>
   </button>
 
-  <div v-show="isVisible" id="comparasion2"
+  <div v-show="isVisible" id=""
     class="fixed top-16 right-4 bg-gradient-to-r from-custom-blue/70 to-custom-purple/70 rounded-lg shadow-blue-sm flex flex-col gap-2 items-center justify-center py-2 px-4">
 
       <PokemonToCompare v-for="pokemon in pokemonToCompare" @delete-pokemon="handleDeletePokemon(pokemon)">
