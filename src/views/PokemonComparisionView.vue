@@ -32,6 +32,7 @@ const fetchPokemonsDetails = async (id1, id2) => {
         value: String(stat.base_stat)
       })),
       moves: pokemonData[0].moves.slice(0, 10).map(move => move.move.name.toUpperCase()).join(', '),
+      imageFront: pokemonData[0].sprites.other['official-artwork'].front_default,
     }
 
     pokemon2.value = {
@@ -46,6 +47,7 @@ const fetchPokemonsDetails = async (id1, id2) => {
         value: String(stat.base_stat)
       })),
       moves: pokemonData[1].moves.slice(0, 10).map(move => move.move.name.toUpperCase()).join(', '),
+      imageFront: pokemonData[1].sprites.other['official-artwork'].front_default,
     }
 
   } catch (error) {
@@ -69,7 +71,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white">
+  <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white flex flex-col justify-center items-center gap-4">
+
+    <div class="w-full flex flex-row justify-center items-center gap-4" v-if="pokemon1 && pokemon2">
+      <img class="w-36" :src="pokemon1.imageFront"/>
+      <p
+      class="text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm  break-words" >
+      VS
+    </p>
+      <img class="w-36" :src="pokemon2.imageFront"/>
+    </div>
 
     <div class="w-full flex flex-col justify-start items-center gap-2" v-if="pokemonToCompare.length > 0">
       <ComparasionForm :pokemon-data-1="pokemon1.name" :pokemon-data-2="pokemon2.name">Name</ComparasionForm>

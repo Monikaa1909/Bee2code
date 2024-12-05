@@ -6,6 +6,8 @@ import PokemonForm from '@/components/pokemon/PokemonForm.vue'
 
 import { usePokemonStore } from '@/stores/pokemonStore'
 
+
+
 const pokemonStore = usePokemonStore(); 
 
 
@@ -30,6 +32,7 @@ const fetchPokemonDetails = async (id) => {
         value: String(stat.base_stat)
       })),
       moves: data.moves.slice(0, 10).map(move => move.move.name.toUpperCase()).join(', '),
+      imageFront: data.sprites.other['official-artwork'].front_default,
     }
   } catch (error) {
     console.error('Error while fetching data', error)
@@ -54,9 +57,15 @@ onMounted(() => {
 
 <template>
   <div
-    class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white flex  justify-center items-center">
-    <div class="w-full flex flex-col justify-start items-center gap-2" v-if="pokemon">
-      <PokemonForm :pokemon-data="pokemon.name">Name</PokemonForm>
+    class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white flex flex-col justify-center items-center gap-4">
+    <div class="w-full flex flex-row justify-center items-center gap-4" v-if="pokemon">
+      <img class="w-36" :src="pokemon.imageFront"/>
+      <p
+      class="text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm  break-words" >
+      HI! I'M {{ pokemon.name }}!
+    </p>
+    </div>
+    <div class=" w-full flex flex-col justify-start items-center gap-2" v-if="pokemon">
       <PokemonForm :pokemon-data="pokemon.types">Types</PokemonForm>
       <PokemonForm :pokemon-data="pokemon.height">Height</PokemonForm>
       <PokemonForm :pokemon-data="pokemon.height">Weight</PokemonForm>
@@ -73,8 +82,6 @@ onMounted(() => {
             :value="pokemon.moves" readonly></textarea>
         </div>
       </form>
-
-      <img :src="pokemon.image" alt="Pokemon Image" />
     </div>
 
     <div v-else>

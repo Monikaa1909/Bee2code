@@ -7,10 +7,11 @@ import { usePokemonStore } from '@/stores/pokemonStore'
 
 import { ref, onMounted, computed, watch } from 'vue'
 
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const pokemonStore = usePokemonStore()
 const router = useRouter()
+const route = useRoute()
 
 const isModalOpen = ref(false)
 const typeOfData = ref('')
@@ -68,9 +69,13 @@ const loadPokemon = async (page) => {
 // const pokemonToCompare = ref([])
 // pokemonToCompare.value = pokemonStore.pokemonToCompare
 
-
+const isAlertOpen = ref(false)
 onMounted(() => {
   loadPokemon(currentPage.value)
+  if (route.query.error) {
+    isAlertOpen.value = true // Wyświetlenie komunikatu błędu
+    router.replace({ query: { ...route.query, error: undefined } })
+  }
   console.log(pokemonStore.pokemonToCompare)
 })
 
@@ -109,6 +114,7 @@ function deletePokemonToCompare(pokemon) {
   // }
 }
 
+
 function compare() {
   router.push(`/example/comparision`)
 }
@@ -131,6 +137,26 @@ function seeDetails(pokemon) {
       <template v-slot:counter>{{ pokemonStore.pokemonToCompare.length }}</template>
     </Comparison>
 
+    <div 
+    @click="isAlertOpen = false" 
+      v-if="isAlertOpen"
+    class="fixed inset-0 flex items-center justify-center bg-gray-500/75">
+
+      <div
+        class="bg-[#111111] p-6 rounded-lg shadow-lg w-full max-w-96 sm:w-96 text-center flex flex-col items-center justify-center gap-8">
+
+        <p
+          class="rounded-lg p-2 w-full text-center text-xl font-semibold tracking-10">
+          OH NO!</p>
+        <p class="text-center text-sm font-light tracking-10">
+          YOU HAVE TRIED TO COMPARE, BUT FIRST YOU MUST SELECT TWO POKEMON!
+        </p>
+
+        <SmallButton class="w-32" @click="$emit('closeModal')">CLOSE</SmallButton>
+
+      </div>
+    </div>
+
     <p
       class="px-24 text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm w-full break-words pb-24">
       WATCH AND COMPARE POKEMON
@@ -144,7 +170,7 @@ function seeDetails(pokemon) {
       <SmallButton
         :class="{ 'bg-custom-dark-gray hover:bg-custom-dark-gray cursor-default shadow-none': currentPage === 1 || loading }"
         @click="loadPokemon(currentPage - 1)">Prev</SmallButton>
-        <p class="text-sm font-light tracking-10">PAGE {{ currentPage }}</p>
+      <p class="text-sm font-light tracking-10">PAGE {{ currentPage }}</p>
       <SmallButton
         :class="{ 'bg-custom-dark-gray hover:bg-custom-dark-gray cursor-default shadow-none': loading || !isNextPage }"
         @click="loadPokemon(currentPage + 1)">Next</SmallButton>
