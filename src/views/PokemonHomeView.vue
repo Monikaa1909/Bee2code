@@ -1,21 +1,29 @@
 <script setup>
+
 import Comparison from '@/components/pokemon/Comparison.vue'
 import Modal from '@/components/pokemon/Modal.vue'
 import Search from '@/components/pokemon/Search.vue'
 import SmallButton from '@/components/pokemon/SmallButton.vue'
+import { usePokemonToCompareStore } from '@/stores/pokemonToCompareStore'
 import { usePokemonStore } from '@/stores/pokemonStore'
-
 import { ref, onMounted, computed, watch } from 'vue'
-
 import { useRouter, useRoute } from 'vue-router'
 
+const pokemonToCompareStore = usePokemonToCompareStore()
 const pokemonStore = usePokemonStore()
+
 const router = useRouter()
 const route = useRoute()
 
 const isModalOpen = ref(false)
 const typeOfData = ref('')
 const pokemonData = ref([])
+const currentPage = ref(1)
+const loadedPokemon = ref([])
+const loading = ref(false)
+const searchQuery = ref('')
+const isAlertOpen = ref(false)
+const isNextPage = ref(true)
 
 function openModal(newTypeOfData, newPokemonData) {
   isModalOpen.value = true
@@ -27,16 +35,8 @@ const closeModal = () => {
   isModalOpen.value = false
 }
 
-const currentPage = ref(1)
-const loadedPokemon = ref([])
-const pokemon = ref([])
-const loading = ref(false)
-const searchQuery = ref('')
-
-const loadPokemon = async (page) => {
-  if (page < 1) return
+const loadPokemon = async () => {
   loading.value = true
-  const offset = (page - 1) * 20
 
   try {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1301`)
@@ -58,57 +58,24 @@ const loadPokemon = async (page) => {
         image: imageUrl,
       }
     }))
+
+    pokemonStore.setPokemonToCompare(loadedPokemon.value)
   } catch (error) {
     console.error('Error while fetching data', error)
   } finally {
     loading.value = false
-    currentPage.value = page
+    currentPage.value = 1
   }
 }
-
-function getPokemon2(page) {
-  if (page < 1) return
-  loading.value = true
-  const offset = (page) * 20
-  console.log('getpokemon')
-  console.log(loadedPokemon.value.slice(offset, 20))
-  pokemon.value = loadedPokemon.value.slice(offset, 20)
-  loading.value = false
-  currentPage.value = page
-}
-
-const getPokemon = (startIndex) => {
-  console.log('getpokemon')
-  startIndex = (startIndex-1) * 20
-  const updatedPokemon = [...pokemon.value]; // Tworzymy kopię tablicy pokemon
-
-  // Sprawdzamy, czy zakres indeksów jest poprawny
-  if (startIndex < 0 || startIndex+20 >= loadedPokemon.value.length ) {
-    console.error('Niepoprawny zakres indeksów');
-    return;
-  }
-
-  // Podmiana wartości w pokemon od startIndex do endIndex
-  for (let i = startIndex; i <= startIndex+20; i++) {
-    if (i < loadedPokemon.value.length) {
-      updatedPokemon[i] = loadedPokemon.value[i]; // Przypisujemy wartości z loadedPokemon do pokemon
-    }
-  }
-
-  // Aktualizujemy pokemon
-  pokemon.value = updatedPokemon
-};
-
-const isAlertOpen = ref(false)
 
 onMounted(() => {
-  loadPokemon(currentPage.value)
+  if (!pokemonStore.pokemon.length > 0) loadPokemon()
+  else loadedPokemon.value = pokemonStore.pokemon
+
   if (route.query.error) {
-    isAlertOpen.value = true // Wyświetlenie komunikatu błędu
-    router.replace({ query: { ...route.query, error: undefined } })
+    isAlertOpen.value = true /
+      router.replace({ query: { ...route.query, error: undefined } })
   }
-  
-  console.log(pokemonStore.pokemonToCompare)
 })
 
 const filteredPokemon = computed(() => {
@@ -117,13 +84,9 @@ const filteredPokemon = computed(() => {
   )
 })
 
-const isNextPage = ref(true)
-
 const paginatedPokemon = computed(() => {
-  const startIndex = (currentPage.value - 1) * 20; // Początek zakresu (indeks)
-  const endIndex = startIndex + 20; // Koniec zakresu (indeks + 20)
-  return filteredPokemon.value.slice(startIndex, endIndex);
-});
+  return filteredPokemon.value.slice((currentPage.value - 1) * 20, (currentPage.value - 1) * 20 + 20)
+})
 
 watch(paginatedPokemon, (newFilteredPokemon) => {
   if (newFilteredPokemon.length < 20) {
@@ -137,32 +100,20 @@ watch(searchQuery, (newSearchQuery) => {
 })
 
 function addPokemonToCompare(pokemon) {
-  console.log("pokemony w magazynie: " + pokemonStore.pokemonToCompare)
   if (!isAddingActive(pokemon)) return
-  else {
-    // pokemonToCompare.value.push(pokemon)
-    // console.log('pokemony u mnie: '+ pokemonToCompare.value)
-    pokemonStore.setPokemonToCompare(pokemon)
-    console.log("pokemony w magazynie: " + pokemonStore.pokemonToCompare)
-  }
+  else pokemonToCompareStore.setPokemonToCompare(pokemon)
 }
 
 function deletePokemonToCompare(pokemon) {
-  // const index = pokemonStore.pokemonToCompare.value.findIndex(p => p.id === pokemon.id);
-  pokemonStore.removePokemonFromCompare(pokemon)
-  // if (index !== -1) {
-  // pokemonToCompare.value.splice(index, 1)
-
-  // }
+  pokemonToCompareStore.removePokemonFromCompare(pokemon)
 }
-
 
 function compare() {
   router.push(`/example/comparision`)
 }
 
 function isAddingActive(pokemon) {
-  if (pokemonStore.pokemonToCompare.length === 2 || pokemonStore.pokemonToCompare.some(item => item.id === pokemon.id)) return false
+  if (pokemonToCompareStore.pokemonToCompare.length === 2 || pokemonToCompareStore.pokemonToCompare.some(item => item.id === pokemon.id)) return false
   return true
 }
 
@@ -170,8 +121,12 @@ function seeDetails(pokemon) {
   router.push(`/example/details/${pokemon.id}`)
 }
 
-function changeCurrentPage(page) {
+function prevPage(page) {
   if (page < 1) return
+  currentPage.value = page
+}
+
+function nextPage(page) {
   if (!isNextPage.value) return
   currentPage.value = page
 }
@@ -181,27 +136,20 @@ function changeCurrentPage(page) {
   <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white">
 
     <Comparison @compare="compare" @delete-pokemon="deletePokemonToCompare"
-      :pokemon-to-compare="pokemonStore.pokemonToCompare">
-      <template v-slot:counter>{{ pokemonStore.pokemonToCompare.length }}</template>
+      :pokemon-to-compare="pokemonToCompareStore.pokemonToCompare">
+      <template v-slot:counter>{{ pokemonToCompareStore.pokemonToCompare.length }}</template>
     </Comparison>
 
-    <div 
-    @click="isAlertOpen = false" 
-      v-if="isAlertOpen"
-    class="fixed inset-0 flex items-center justify-center bg-gray-500/75">
-
+    <div @click="isAlertOpen = false" v-if="isAlertOpen"
+      class="fixed inset-0 flex items-center justify-center bg-gray-500/75">
       <div
         class="bg-[#111111] p-6 rounded-lg shadow-lg w-full max-w-96 sm:w-96 text-center flex flex-col items-center justify-center gap-8">
-
-        <p
-          class="rounded-lg p-2 w-full text-center text-xl font-semibold tracking-10">
+        <p class="rounded-lg p-2 w-full text-center text-xl font-semibold tracking-10">
           OH NO!</p>
         <p class="text-center text-sm font-light tracking-10">
           YOU HAVE TRIED TO COMPARE, BUT FIRST YOU MUST SELECT TWO POKEMON!
         </p>
-
         <SmallButton class="w-32" @click="$emit('closeModal')">CLOSE</SmallButton>
-
       </div>
     </div>
 
@@ -217,11 +165,11 @@ function changeCurrentPage(page) {
     <div class="w-full flex flex-row justify-end items-center pb-2 gap-2">
       <SmallButton
         :class="{ 'bg-custom-dark-gray hover:bg-custom-dark-gray cursor-default shadow-none': currentPage === 1 || loading }"
-        @click="changeCurrentPage(currentPage - 1)">Prev</SmallButton>
+        @click="prevPage(currentPage - 1)">PREV</SmallButton>
       <p class="text-sm font-light tracking-10">PAGE {{ currentPage }}</p>
       <SmallButton
         :class="{ 'bg-custom-dark-gray hover:bg-custom-dark-gray cursor-default shadow-none': loading || !isNextPage }"
-        @click="changeCurrentPage(currentPage + 1)">Next</SmallButton>
+        @click="nextPage(currentPage + 1)">NEXT</SmallButton>
     </div>
 
     <div
@@ -234,27 +182,22 @@ function changeCurrentPage(page) {
 
     <div v-for="pokemon in paginatedPokemon" :key="pokemon.name"
       class="grid grid-cols-4 items-center border-b-[0.7px] border-b-custom-blue/50">
-
       <div class="flex items-center justify-center gap-2">
         <img class="h-10 w-10" :src="pokemon.image" />
         <p class="text-center text-lg font-light tracking-10">{{ pokemon.name }}</p>
       </div>
-
       <div class="flex items-center justify-center gap-2">
         <p class="text-center text-lg font-light tracking-10 min-w-20">{{ pokemon.types[0] }}</p>
         <SmallButton :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
           @click="openModal('ALL TYPES', pokemon.types)">+{{ pokemon.types.length - 1 }}</SmallButton>
       </div>
-
       <div class="flex items-center justify-center gap-2">
-        <p class="text-center text-lg font-light tracking-10 min-w-20">{{ pokemon.abilities[0] }}</p>
+        <p class="text-center text-lg font-light tracking-10  min-w-40">{{ pokemon.abilities[0] }}</p>
         <SmallButton :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
           @click="openModal('ALL ABILITIES', pokemon.abilities)">+{{ pokemon.abilities.length - 1 }}</SmallButton>
       </div>
-
       <div class="flex flex-col items-center justify-center gap-1 py-2">
         <SmallButton @click="seeDetails(pokemon)" class="w-28">DETAILS</SmallButton>
-
         <button @click="addPokemonToCompare(pokemon)"
           :class="{ 'cursor-default bg-custom-dark-gray hover:bg-custom-dark-gray shadow-none': !isAddingActive(pokemon) }"
           class="comparasion3 w-28 bg-custom-blue/50 hover:bg-custom-blue/70 py-1 px-2 rounded-md shadow-blue-sm">
@@ -266,6 +209,5 @@ function changeCurrentPage(page) {
     </div>
 
     <Modal @close-modal="closeModal" :type-of-data="typeOfData" :pokemon-data="pokemonData" v-if="isModalOpen"></Modal>
-
   </div>
 </template>

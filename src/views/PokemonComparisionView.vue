@@ -1,11 +1,11 @@
 <script setup>
 
-import { usePokemonStore } from '@/stores/pokemonStore'
+import { usePokemonToCompareStore } from '@/stores/pokemonToCompareStore'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import ComparasionForm from '@/components/pokemon/ComparasionForm.vue';
-const pokemonStore = usePokemonStore()
-const pokemonToCompare = ref(pokemonStore.pokemonToCompare) 
+const pokemonToCompareStore = usePokemonToCompareStore()
+const pokemonToCompare = ref(pokemonToCompareStore.pokemonToCompare) 
 
 const pokemon1 = ref([])
 const pokemon2 = ref([])
@@ -19,7 +19,6 @@ const fetchPokemonsDetails = async (id1, id2) => {
 
     const pokemonData = [response1.data, response2.data]
 
-    // Mapowanie danych Pokémonów
     pokemon1.value = {
       name: pokemonData[0].name.toUpperCase(),
       image: pokemonData[0].sprites.front_default,
@@ -49,7 +48,6 @@ const fetchPokemonsDetails = async (id1, id2) => {
       moves: pokemonData[1].moves.slice(0, 10).map(move => move.move.name.toUpperCase()).join(', '),
       imageFront: pokemonData[1].sprites.other['official-artwork'].front_default,
     }
-
   } catch (error) {
     console.error('Error while fetching data', error)
   }
@@ -61,12 +59,9 @@ const fetchAndDisplayTwoPokemons = async () => {
   }
 }
 
-
 onMounted(() => {
   fetchAndDisplayTwoPokemons()
 })
-
-
 
 </script>
 

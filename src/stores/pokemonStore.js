@@ -2,19 +2,15 @@ import { defineStore } from 'pinia';
 
 export const usePokemonStore = defineStore('pokemonStore', {
   state: () => ({
-    pokemonToCompare: [], 
+    pokemon: [], 
   }),
   actions: {
     setPokemonToCompare(pokemon) {
-      if (this.pokemonToCompare.length < 2) {
-        this.pokemonToCompare.push(pokemon)
-      }
+      this.pokemon = pokemon
     },
-    removePokemonFromCompare(pokemon) {
-      this.pokemonToCompare = this.pokemonToCompare.filter(p => p.id !== pokemon.id);
-    },
+   
     clearPokemonToCompare() {
-      this.pokemonToCompare = []
+      this.pokemon = []
     },
   },
 })

@@ -1,4 +1,5 @@
 <script setup>
+
 import PokemonToCompare from './PokemonToCompare.vue'
 import { ref, onMounted, onUnmounted, defineProps, watch } from 'vue'
 
@@ -21,15 +22,12 @@ const closeOnClickOutside = (event) => {
   }
 
   const comparisonButton = document.getElementById('comparasion1')
-  // const comparisonDiv = document.querySelectorAll('.comparasion2')
   const comparisonButton2 = document.querySelectorAll('.comparasion3')
 
   if (
     comparisonButton &&
-    // comparisonDiv &&
     comparisonButton2 &&
     !comparisonButton.contains(event.target) &&
-    // !!Array.from(comparisonDiv).some(button => button.contains(event.target)) &&
     !Array.from(comparisonButton2).some(button => button.contains(event.target))
   ) {
     isVisible.value = false
@@ -49,15 +47,6 @@ function handleDeletePokemon(pokemon) {
   if (props.pokemonToCompare.length == 1) isVisible.value = false 
   emit('delete-pokemon', pokemon)
 }
-
-watch(
-  () => isVisible.value,
-  (newPokemonToCompare) => {
-    // console.log(newPokemonToCompare)
-  },
-  { immediate: true }
-)
-
 </script>
 
 <template>
@@ -72,15 +61,12 @@ watch(
 
   <div v-show="isVisible" id=""
     class="fixed top-16 right-4 bg-gradient-to-r from-custom-blue/70 to-custom-purple/70 rounded-lg shadow-blue-sm flex flex-col gap-2 items-center justify-center py-2 px-4">
-
       <PokemonToCompare v-for="pokemon in pokemonToCompare" @delete-pokemon="handleDeletePokemon(pokemon)">
         <template v-slot:image><img :src="pokemon.image" class="h-10 w-10" /></template>
         <template v-slot:name>{{ pokemon.name }}</template>
       </PokemonToCompare>
-  
   </div>
   <button v-show="isVisible && pokemonToCompare.length === 2" @click="$emit('compare')"
-   
     class="fixed right-4 top-44 bg-gradient-to-r from-custom-blue/70 to-custom-purple/70 rounded-lg shadow-blue-sm flex items-center justify-center py-2 px-4">
     <p class="text-sm font-semibold tracking-5">COMPARE</p>
   </button>

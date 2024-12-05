@@ -1,18 +1,11 @@
 <script setup>
+
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import PokemonForm from '@/components/pokemon/PokemonForm.vue'
 
-import { usePokemonStore } from '@/stores/pokemonStore'
-
-
-
-const pokemonStore = usePokemonStore(); 
-
-
 const route = useRoute()
-
 const pokemon = ref(null)
 
 const fetchPokemonDetails = async (id) => {
@@ -39,20 +32,11 @@ const fetchPokemonDetails = async (id) => {
   }
 }
 
-const fetchEvolutionChain = async (speciesUrl) => {
-  try {
-    const speciesResponse = await axios.get(speciesUrl)
-    const evolutionChainUrl = speciesResponse.data.evolution_chain.url
-    const evolutionResponse = await axios.get(evolutionChainUrl)
-    return evolutionResponse.data.chain
-  } catch (error) {
-    console.error('Error fetching evolution chain', error)
-  }
-}
 onMounted(() => {
   const pokemonId = route.params.id
   fetchPokemonDetails(pokemonId)
 })
+
 </script>
 
 <template>
