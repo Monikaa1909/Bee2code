@@ -6,6 +6,10 @@ import SmallButton from '@/components/pokemon/SmallButton.vue';
 
 import { ref, onMounted, computed, watch } from 'vue'
 
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 const isModalOpen = ref(false)
 const typeOfData = ref('')
 const pokemonData = ref([])
@@ -38,11 +42,13 @@ const loadPokemon = async (page) => {
     pokemon.value = await Promise.all(data.results.map(async (pokemon) => {
       const pokemonData = await fetch(pokemon.url).then(res => res.json())
 
+      const id = pokemonData.id
       const types = pokemonData.types.map(t => t.type.name.toUpperCase())
       const abilities = pokemonData.abilities.map(a => a.ability.name.toUpperCase())
       const imageUrl = pokemonData.sprites.front_default
 
       return {
+        id,
         name: pokemon.name.toUpperCase(),
         types,
         abilities,
@@ -84,7 +90,7 @@ function addPokemonToCompare(pokemon) {
 }
 
 function deletePokemonToCompare(pokemon) {
-  const index = pokemonToCompare.value.findIndex(p => p.name === pokemon.name);
+  const index = pokemonToCompare.value.findIndex(p => p.id === pokemon.id);
   if (index !== -1) {
     pokemonToCompare.value.splice(index, 1)
   }
@@ -95,14 +101,17 @@ function compare() {
 }
 
 function isAddingActive(pokemon) {
-  if (pokemonToCompare.value.length === 2 || pokemonToCompare.value.some(item => item.name === pokemon.name)) return false
+  if (pokemonToCompare.value.length === 2 || pokemonToCompare.value.some(item => item.id === pokemon.id)) return false
   return true
 }
 
+function seeDetails(pokemon) {
+  router.push(`/example/details/${pokemon.id}`)
+}
 </script>
 
 <template>
-  <div class="bg-[#111111] relative h-full w-full p-4 md:p-24 xl:p-64 text-white">
+  <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:p-64 text-white">
 
     <Comparison @compare="compare" @delete-pokemon="deletePokemonToCompare" :pokemon-to-compare="pokemonToCompare">
       <template v-slot:counter>{{ pokemonToCompare.length }}</template>
@@ -149,20 +158,17 @@ function isAddingActive(pokemon) {
       <div class="flex items-center justify-center gap-2">
         <p class="text-center text-lg font-light tracking-10 min-w-20">{{ pokemon.types[0] }}</p>
         <SmallButton :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
-          @click="openModal('ALL TYPES', pokemon.types)">{{ pokemon.types.length - 1 }}</SmallButton>
+          @click="openModal('ALL TYPES', pokemon.types)">+{{ pokemon.types.length - 1 }}</SmallButton>
       </div>
 
       <div class="flex items-center justify-center gap-2">
         <p class="text-center text-lg font-light tracking-10 min-w-20">{{ pokemon.abilities[0] }}</p>
         <SmallButton :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
-          @click="openModal('ALL ABILITIES', pokemon.abilities)">{{ pokemon.abilities.length - 1 }}</SmallButton>
+          @click="openModal('ALL ABILITIES', pokemon.abilities)">+{{ pokemon.abilities.length - 1 }}</SmallButton>
       </div>
 
       <div class="flex flex-col items-center justify-center gap-1 py-2">
-        <SmallButton class="w-28">DETAILS</SmallButton>
-        <!-- <SmallButton :class="{ 'cursor-default bg-custom-dark-gray hover:bg-custom-dark-gray': !isAddingActive(pokemon) }"
-          class="  " @click="addPokemonToCompare(pokemon)">ADD POKEMON
-        </SmallButton> -->
+        <SmallButton @click="seeDetails(pokemon)" class="w-28">DETAILS</SmallButton>
 
         <button @click="addPokemonToCompare(pokemon)"
         :class="{ 'cursor-default bg-custom-dark-gray hover:bg-custom-dark-gray': !isAddingActive(pokemon) }"
@@ -173,9 +179,6 @@ function isAddingActive(pokemon) {
         </button>
       </div>
     </div>
-
-   
-
 
     <Modal @close-modal="closeModal" :type-of-data="typeOfData" :pokemon-data="pokemonData" v-if="isModalOpen"></Modal>
 

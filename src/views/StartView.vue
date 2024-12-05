@@ -76,7 +76,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative h-full w-full bg-cover bg-fixed text-custom-dark-gray" v-bind="backgroundStyle">
+  <div class="relative min-h-screen h-full w-full bg-cover bg-fixed text-custom-dark-gray" v-bind="backgroundStyle">
     <TopNav @notifyToggleDarkMode="toggleDarkMode" @toggle-menu="toggleMenu" @change-section="changeSection"
       :is-dark-mode="isDarkMode" :section="section" />
     <div v-if="showMenu" class="fixed top-24 sm:top-20 right-2 sm:right-2 left-1/2 sm:left-auto transform -translate-x-1/2 sm:translate-x-0 shadow-small-box dark:shadow-small-box-dark bg-gradient-to-r 
