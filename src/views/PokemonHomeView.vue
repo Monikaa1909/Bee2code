@@ -2,12 +2,14 @@
 import Comparison from '@/components/pokemon/Comparison.vue'
 import Modal from '@/components/pokemon/Modal.vue'
 import Search from '@/components/pokemon/Search.vue'
-import SmallButton from '@/components/pokemon/SmallButton.vue';
+import SmallButton from '@/components/pokemon/SmallButton.vue'
+import { usePokemonStore } from '@/stores/pokemonStore'
 
 import { ref, onMounted, computed, watch } from 'vue'
 
 import { useRouter } from 'vue-router'
 
+const pokemonStore = usePokemonStore()
 const router = useRouter()
 
 const isModalOpen = ref(false)
@@ -63,8 +65,13 @@ const loadPokemon = async (page) => {
   }
 }
 
+// const pokemonToCompare = ref([])
+// pokemonToCompare.value = pokemonStore.pokemonToCompare
+
+
 onMounted(() => {
   loadPokemon(currentPage.value)
+  console.log(pokemonStore.pokemonToCompare)
 })
 
 const filteredPokemon = computed(() => {
@@ -82,26 +89,32 @@ watch(filteredPokemon, (newFilteredPokemon) => {
   else isNextPage.value = true
 })
 
-const pokemonToCompare = ref([])
-
 function addPokemonToCompare(pokemon) {
+  console.log("pokemony w magazynie: " + pokemonStore.pokemonToCompare)
   if (!isAddingActive(pokemon)) return
-  else pokemonToCompare.value.push(pokemon)
-}
-
-function deletePokemonToCompare(pokemon) {
-  const index = pokemonToCompare.value.findIndex(p => p.id === pokemon.id);
-  if (index !== -1) {
-    pokemonToCompare.value.splice(index, 1)
+  else {
+    // pokemonToCompare.value.push(pokemon)
+    // console.log('pokemony u mnie: '+ pokemonToCompare.value)
+    pokemonStore.setPokemonToCompare(pokemon)
+    console.log("pokemony w magazynie: " + pokemonStore.pokemonToCompare)
   }
 }
 
+function deletePokemonToCompare(pokemon) {
+  // const index = pokemonStore.pokemonToCompare.value.findIndex(p => p.id === pokemon.id);
+  pokemonStore.removePokemonFromCompare(pokemon)
+  // if (index !== -1) {
+  // pokemonToCompare.value.splice(index, 1)
+
+  // }
+}
+
 function compare() {
-  console.log("Porównaj")
+  router.push(`/example/comparision`)
 }
 
 function isAddingActive(pokemon) {
-  if (pokemonToCompare.value.length === 2 || pokemonToCompare.value.some(item => item.id === pokemon.id)) return false
+  if (pokemonStore.pokemonToCompare.length === 2 || pokemonStore.pokemonToCompare.some(item => item.id === pokemon.id)) return false
   return true
 }
 
@@ -111,14 +124,15 @@ function seeDetails(pokemon) {
 </script>
 
 <template>
-  <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:p-64 text-white">
+  <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white">
 
-    <Comparison @compare="compare" @delete-pokemon="deletePokemonToCompare" :pokemon-to-compare="pokemonToCompare">
-      <template v-slot:counter>{{ pokemonToCompare.length }}</template>
+    <Comparison @compare="compare" @delete-pokemon="deletePokemonToCompare"
+      :pokemon-to-compare="pokemonStore.pokemonToCompare">
+      <template v-slot:counter>{{ pokemonStore.pokemonToCompare.length }}</template>
     </Comparison>
 
     <p
-      class="p-24 text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm w-full break-words pb-24">
+      class="px-24 text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm w-full break-words pb-24">
       WATCH AND COMPARE POKEMON
     </p>
 
@@ -126,17 +140,14 @@ function seeDetails(pokemon) {
       <Search v-model:modelValue="searchQuery" />
     </div>
 
-
-
-    <!-- Pagination -->
-    <div class="pagination mb-4">
-      <button @click="loadPokemon(currentPage - 1)" :disabled="currentPage === 1 || loading">
-        Poprzednia
-      </button>
-      <span>Strona {{ currentPage }}</span>
-      <button @click="loadPokemon(currentPage + 1)" :disabled="loading || !isNextPage">
-        Następna
-      </button>
+    <div class="w-full flex flex-row justify-end items-center pb-2 gap-2">
+      <SmallButton
+        :class="{ 'bg-custom-dark-gray hover:bg-custom-dark-gray cursor-default shadow-none': currentPage === 1 || loading }"
+        @click="loadPokemon(currentPage - 1)">Prev</SmallButton>
+        <p class="text-sm font-light tracking-10">PAGE {{ currentPage }}</p>
+      <SmallButton
+        :class="{ 'bg-custom-dark-gray hover:bg-custom-dark-gray cursor-default shadow-none': loading || !isNextPage }"
+        @click="loadPokemon(currentPage + 1)">Next</SmallButton>
     </div>
 
     <div
@@ -171,7 +182,7 @@ function seeDetails(pokemon) {
         <SmallButton @click="seeDetails(pokemon)" class="w-28">DETAILS</SmallButton>
 
         <button @click="addPokemonToCompare(pokemon)"
-        :class="{ 'cursor-default bg-custom-dark-gray hover:bg-custom-dark-gray': !isAddingActive(pokemon) }"
+          :class="{ 'cursor-default bg-custom-dark-gray hover:bg-custom-dark-gray shadow-none': !isAddingActive(pokemon) }"
           class="comparasion3 w-28 bg-custom-blue/50 hover:bg-custom-blue/70 py-1 px-2 rounded-md shadow-blue-sm">
           <p class="text-xs font-light">
             ADD POKEMON

@@ -20,6 +20,11 @@ const router = createRouter({
       name: 'details',
       component: () => import('../views/PokemonDetailsView.vue'),
     },
+    {
+      path: '/example/comparision',
+      name: 'comparision',
+      component: () => import('../views/PokemonComparisionView.vue'),
+    },
   ],
 })
 

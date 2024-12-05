@@ -2,7 +2,12 @@
 import { useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import PokemonForm from '@/components/pokemon/PokemonForm.vue';
+import PokemonForm from '@/components/pokemon/PokemonForm.vue'
+
+import { usePokemonStore } from '@/stores/pokemonStore'
+
+const pokemonStore = usePokemonStore(); 
+
 
 const route = useRoute()
 
@@ -49,7 +54,7 @@ onMounted(() => {
 
 <template>
   <div
-    class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:p-64 text-white flex  justify-center items-center">
+    class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white flex  justify-center items-center">
     <div class="w-full flex flex-col justify-start items-center gap-2" v-if="pokemon">
       <PokemonForm :pokemon-data="pokemon.name">Name</PokemonForm>
       <PokemonForm :pokemon-data="pokemon.types">Types</PokemonForm>

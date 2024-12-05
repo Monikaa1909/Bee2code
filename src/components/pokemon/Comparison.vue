@@ -79,9 +79,9 @@ watch(
       </PokemonToCompare>
   
   </div>
-  <button v-show="isVisible" @click="$emit('compare')"
-    :class="{ 'top-32': pokemonToCompare.length === 1, 'top-44': pokemonToCompare.length === 2 }"
-    class="fixed right-4 bg-gradient-to-r from-custom-blue/70 to-custom-purple/70 rounded-lg shadow-blue-sm flex items-center justify-center py-2 px-4">
+  <button v-show="isVisible && pokemonToCompare.length === 2" @click="$emit('compare')"
+   
+    class="fixed right-4 top-44 bg-gradient-to-r from-custom-blue/70 to-custom-purple/70 rounded-lg shadow-blue-sm flex items-center justify-center py-2 px-4">
     <p class="text-sm font-semibold tracking-5">COMPARE</p>
   </button>
 </template>
