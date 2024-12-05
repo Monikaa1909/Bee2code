@@ -28,21 +28,21 @@ const closeModal = () => {
 }
 
 const currentPage = ref(1)
+const loadedPokemon = ref([])
 const pokemon = ref([])
 const loading = ref(false)
 const searchQuery = ref('')
 
 const loadPokemon = async (page) => {
-  console.log("Wywołanie load pokemons")
   if (page < 1) return
   loading.value = true
   const offset = (page - 1) * 20
 
   try {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`)
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1301`)
     const data = await response.json()
 
-    pokemon.value = await Promise.all(data.results.map(async (pokemon) => {
+    loadedPokemon.value = await Promise.all(data.results.map(async (pokemon) => {
       const pokemonData = await fetch(pokemon.url).then(res => res.json())
 
       const id = pokemonData.id
@@ -66,32 +66,74 @@ const loadPokemon = async (page) => {
   }
 }
 
-// const pokemonToCompare = ref([])
-// pokemonToCompare.value = pokemonStore.pokemonToCompare
+function getPokemon2(page) {
+  if (page < 1) return
+  loading.value = true
+  const offset = (page) * 20
+  console.log('getpokemon')
+  console.log(loadedPokemon.value.slice(offset, 20))
+  pokemon.value = loadedPokemon.value.slice(offset, 20)
+  loading.value = false
+  currentPage.value = page
+}
+
+const getPokemon = (startIndex) => {
+  console.log('getpokemon')
+  startIndex = (startIndex-1) * 20
+  const updatedPokemon = [...pokemon.value]; // Tworzymy kopię tablicy pokemon
+
+  // Sprawdzamy, czy zakres indeksów jest poprawny
+  if (startIndex < 0 || startIndex+20 >= loadedPokemon.value.length ) {
+    console.error('Niepoprawny zakres indeksów');
+    return;
+  }
+
+  // Podmiana wartości w pokemon od startIndex do endIndex
+  for (let i = startIndex; i <= startIndex+20; i++) {
+    if (i < loadedPokemon.value.length) {
+      updatedPokemon[i] = loadedPokemon.value[i]; // Przypisujemy wartości z loadedPokemon do pokemon
+    }
+  }
+
+  // Aktualizujemy pokemon
+  pokemon.value = updatedPokemon
+};
 
 const isAlertOpen = ref(false)
+
 onMounted(() => {
   loadPokemon(currentPage.value)
   if (route.query.error) {
     isAlertOpen.value = true // Wyświetlenie komunikatu błędu
     router.replace({ query: { ...route.query, error: undefined } })
   }
+  
   console.log(pokemonStore.pokemonToCompare)
 })
 
 const filteredPokemon = computed(() => {
-  return pokemon.value.filter(pokemon =>
+  return loadedPokemon.value.filter(pokemon =>
     pokemon.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
 
 const isNextPage = ref(true)
 
-watch(filteredPokemon, (newFilteredPokemon) => {
+const paginatedPokemon = computed(() => {
+  const startIndex = (currentPage.value - 1) * 20; // Początek zakresu (indeks)
+  const endIndex = startIndex + 20; // Koniec zakresu (indeks + 20)
+  return filteredPokemon.value.slice(startIndex, endIndex);
+});
+
+watch(paginatedPokemon, (newFilteredPokemon) => {
   if (newFilteredPokemon.length < 20) {
     isNextPage.value = false
   }
   else isNextPage.value = true
+})
+
+watch(searchQuery, (newSearchQuery) => {
+  currentPage.value = 1
 })
 
 function addPokemonToCompare(pokemon) {
@@ -126,6 +168,12 @@ function isAddingActive(pokemon) {
 
 function seeDetails(pokemon) {
   router.push(`/example/details/${pokemon.id}`)
+}
+
+function changeCurrentPage(page) {
+  if (page < 1) return
+  if (!isNextPage.value) return
+  currentPage.value = page
 }
 </script>
 
@@ -169,11 +217,11 @@ function seeDetails(pokemon) {
     <div class="w-full flex flex-row justify-end items-center pb-2 gap-2">
       <SmallButton
         :class="{ 'bg-custom-dark-gray hover:bg-custom-dark-gray cursor-default shadow-none': currentPage === 1 || loading }"
-        @click="loadPokemon(currentPage - 1)">Prev</SmallButton>
+        @click="changeCurrentPage(currentPage - 1)">Prev</SmallButton>
       <p class="text-sm font-light tracking-10">PAGE {{ currentPage }}</p>
       <SmallButton
         :class="{ 'bg-custom-dark-gray hover:bg-custom-dark-gray cursor-default shadow-none': loading || !isNextPage }"
-        @click="loadPokemon(currentPage + 1)">Next</SmallButton>
+        @click="changeCurrentPage(currentPage + 1)">Next</SmallButton>
     </div>
 
     <div
@@ -184,7 +232,7 @@ function seeDetails(pokemon) {
       <div class="text-center text-sm font-semibold tracking-10">ACTIONS</div>
     </div>
 
-    <div v-for="pokemon in filteredPokemon" :key="pokemon.name"
+    <div v-for="pokemon in paginatedPokemon" :key="pokemon.name"
       class="grid grid-cols-4 items-center border-b-[0.7px] border-b-custom-blue/50">
 
       <div class="flex items-center justify-center gap-2">
