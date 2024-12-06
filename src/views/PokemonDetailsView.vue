@@ -49,7 +49,7 @@ onMounted(() => {
       HI! I'M {{ pokemon.name }}!
     </p>
     </div>
-    <div class=" w-full flex flex-col justify-start items-center gap-2" v-if="pokemon">
+    <div class=" w-full flex flex-col justify-start items-center gap-8 sm:gap-4" v-if="pokemon">
       <PokemonForm :pokemon-data="pokemon.types">Types</PokemonForm>
       <PokemonForm :pokemon-data="pokemon.height">Height</PokemonForm>
       <PokemonForm :pokemon-data="pokemon.height">Weight</PokemonForm>

@@ -52,7 +52,7 @@ function handleDeletePokemon(pokemon) {
 <template>
   <button id="comparasion1" @click="isVisible = !isVisible" :disabled="pokemonToCompare.length === 0"
     :class="{ 'bg-custom-dark-gray': pokemonToCompare.length === 0, 'bg-gradient-to-r from-custom-blue/50 to-custom-purple/50 hover:from-custom-blue/70 hover:to-custom-purple/70 shadow-blue-sm': pokemonToCompare.length > 0, 'bg-gradient-to-r from-custom-blue/70 to-custom-purple/70': isVisible }"
-    class="fixed top-4 right-4 py-2 px-4 rounded-lg flex flex-row pb-2 w-72 sm:w-96">
+    class="fixed top-4 right-4 py-2 px-4 rounded-lg flex flex-row justify-center pb-2 w-72">
     <p class="text-base font-semibold tracking-10 pr-2">POKEMON TO COMPARE:</p>
     <p class="text-base font-semibold tracking-10 pr-2">
       <slot name="counter"></slot>

@@ -78,15 +78,15 @@ onMounted(() => {
       <img class="sm:w-36 max-w-28 sm:max-w-36  w-full" :src="pokemon2.imageFront" />
     </div>
 
-    <div class="w-full flex flex-col justify-start items-center gap-2" v-if="pokemonToCompare.length > 0">
+    <div class="w-full flex flex-col justify-start items-center gap-4" v-if="pokemonToCompare.length > 0">
       <ComparasionForm :pokemon-data-1="pokemon1.name" :pokemon-data-2="pokemon2.name">Name</ComparasionForm>
       <ComparasionForm :pokemon-data-1="pokemon1.types" :pokemon-data-2="pokemon2.types">Types</ComparasionForm>
       <ComparasionForm :pokemon-data-1="pokemon1.height" :pokemon-data-2="pokemon2.height">Height</ComparasionForm>
       <ComparasionForm :pokemon-data-1="pokemon1.weight" :pokemon-data-2="pokemon2.weight">Weight</ComparasionForm>
       <ComparasionForm :pokemon-data-1="pokemon1.abilities" :pokemon-data-2="pokemon2.abilities">Abilities
       </ComparasionForm>
-      <form class="flex flex-row justify-center items-center gap-10 sm:gap-4 px-4 sm:px-8 w-full">
-        <label class="text-center text-[12px] sm:text-sm font-semibold tracking-0 sm:tracking-10 w-24">
+      <form class="flex flex-row justify-center items-center gap-2 sm:gap-4 px-4 sm:px-8 w-full">
+        <label class="text-center text-[12px] sm:text-sm font-semibold tracking-0 sm:tracking-10 w-20 sm:flex-shrink-0">
           Moves
         </label>
         <div class="flex flex-col sm:flex-row w-full gap-1 sm:gap-4">
