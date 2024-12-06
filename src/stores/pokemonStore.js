@@ -5,11 +5,11 @@ export const usePokemonStore = defineStore('pokemonStore', {
     pokemon: [], 
   }),
   actions: {
-    setPokemonToCompare(pokemon) {
+    setPokemon(pokemon) {
       this.pokemon = pokemon
     },
    
-    clearPokemonToCompare() {
+    clearPokemon() {
       this.pokemon = []
     },
   },

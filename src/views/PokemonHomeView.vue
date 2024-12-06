@@ -58,8 +58,7 @@ const loadPokemon = async () => {
         image: imageUrl,
       }
     }))
-
-    pokemonStore.setPokemonToCompare(loadedPokemon.value)
+    pokemonStore.setPokemon(loadedPokemon.value)
   } catch (error) {
     console.error('Error while fetching data', error)
   } finally {
@@ -71,8 +70,8 @@ const loadPokemon = async () => {
 onMounted(() => {
   if (!pokemonStore.pokemon.length > 0) loadPokemon()
   else loadedPokemon.value = pokemonStore.pokemon
+  loadedPokemon.value = pokemonStore.pokemon
 
-  console.log(route.query.error)
   if (route.query.error) {
     isAlertOpen.value = true 
       router.replace({ query: { ...route.query, error: undefined } })
