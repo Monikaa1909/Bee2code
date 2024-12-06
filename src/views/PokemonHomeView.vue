@@ -174,7 +174,7 @@ function nextPage(page) {
     </div>
 
     <div
-      class="grid grid-cols-4 w-full bg-gradient-to-r from-custom-blue/50 to-custom-purple/50 shadow-blue-sm bg-opacity-50 rounded-lg py-4">
+      class="grid grid-cols-4 w-full bg-gradient-to-r from-custom-blue/50 to-custom-purple/50 shadow-blue-sm bg-opacity-50 rounded-lg py-4 mb-2">
       <div class="text-center text-sm font-semibold sm:tracking-10">NAMES</div>
       <div class="text-center text-sm font-semibold sm:tracking-10">TYPES</div>
       <div class="text-center text-sm font-semibold sm:tracking-10">ABILITIES</div>
@@ -182,10 +182,10 @@ function nextPage(page) {
     </div>
 
     <div v-for="pokemon in paginatedPokemon" :key="pokemon.name"
-      class="grid grid-cols-4 items-center border-b-[0.7px] border-b-custom-blue/50 w-full">
-      <div class="flex items-center justify-center gap-2 w-full">
+      class="grid grid-cols-4 items-center border-b-[0.7px] border-b-custom-blue/50 w-full hover:bg-gradient-to-r hover:from-custom-blue/10 hover:to-custom-purple/10 hover:hadow-blue-sm hover:bg-opacity-50">
+      <div class="flex items-center justify-center gap-2">
         <img class="hidden sm:block h-10 w-10" :src="pokemon.image" />
-        <p class="text-center text-xs sm:text-lg font-light tracking-0 sm:tracking-10 break-words w-full">{{ pokemon.name }}</p>
+        <p class="text-center text-xs sm:text-lg font-light tracking-0 sm:tracking-10 break-words">{{ pokemon.name }}</p>
       </div>
       <div class="flex sm:flex-row flex-col items-center justify-center sm:gap-2 gap-1 w-full">
         <p class="text-center text-xs sm:text-lg font-light tracking-0 sm:tracking-10 break-words sm:min-w-20">{{ pokemon.types[0] }}</p>
