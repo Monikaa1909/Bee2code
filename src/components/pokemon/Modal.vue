@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="fixed inset-0 flex items-center justify-center bg-gray-500/75">
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-500/75 p-4">
 
     <div class="bg-[#111111] p-6 rounded-lg shadow-lg w-full max-w-96 sm:w-96 text-center flex flex-col items-center justify-center gap-4">
 

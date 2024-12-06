@@ -5,7 +5,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import ComparasionForm from '@/components/pokemon/ComparasionForm.vue';
 const pokemonToCompareStore = usePokemonToCompareStore()
-const pokemonToCompare = ref(pokemonToCompareStore.pokemonToCompare) 
+const pokemonToCompare = ref(pokemonToCompareStore.pokemonToCompare)
 
 const pokemon1 = ref([])
 const pokemon2 = ref([])
@@ -66,15 +66,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white flex flex-col justify-center items-center gap-4">
+  <div
+    class="bg-[#111111] relative min-h-screen h-full w-full p-4 py-24 md:p-24 lg:px-64 text-white flex flex-col justify-center items-center gap-4">
 
-    <div class="w-full flex flex-row justify-center items-center gap-4" v-if="pokemon1 && pokemon2">
-      <img class="w-36" :src="pokemon1.imageFront"/>
+    <div class="w-full flex flex-row justify-center items-center gap-0 sm:gap-4 p-2 sm:p-4" v-if="pokemon1 && pokemon2">
+      <img class="sm:w-36 max-w-28 sm:max-w-36 w-full" :src="pokemon1.imageFront" />
       <p
-      class="text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm  break-words" >
-      VS
-    </p>
-      <img class="w-36" :src="pokemon2.imageFront"/>
+        class="text-2xl sm:text-5xl  font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm s  break-words">
+        VS
+      </p>
+      <img class="sm:w-36 max-w-28 sm:max-w-36  w-full" :src="pokemon2.imageFront" />
     </div>
 
     <div class="w-full flex flex-col justify-start items-center gap-2" v-if="pokemonToCompare.length > 0">
@@ -82,22 +83,23 @@ onMounted(() => {
       <ComparasionForm :pokemon-data-1="pokemon1.types" :pokemon-data-2="pokemon2.types">Types</ComparasionForm>
       <ComparasionForm :pokemon-data-1="pokemon1.height" :pokemon-data-2="pokemon2.height">Height</ComparasionForm>
       <ComparasionForm :pokemon-data-1="pokemon1.weight" :pokemon-data-2="pokemon2.weight">Weight</ComparasionForm>
-      <ComparasionForm :pokemon-data-1="pokemon1.abilities" :pokemon-data-2="pokemon2.abilities">Abilities</ComparasionForm>
-      <form class="flex flex-row justify-between items-center gap-4 px-8">
-        <label class="text-center text-sm font-semibold tracking-10 w-20">
+      <ComparasionForm :pokemon-data-1="pokemon1.abilities" :pokemon-data-2="pokemon2.abilities">Abilities
+      </ComparasionForm>
+      <form class="flex flex-row justify-center items-center gap-10 sm:gap-4 px-4 sm:px-8 w-full">
+        <label class="text-center text-[12px] sm:text-sm font-semibold tracking-0 sm:tracking-10 w-24">
           Moves
         </label>
-        <div class="bg-gradient-to-r from-custom-blue to-custom-purple p-[0.7px] rounded-md w-full sm:w-64 lg:w-96">
-          <textarea type="text"
-          
-            class="p-2 bg-[#111111] rounded-md focus:outline-none sm:w-full text-center text-lg font-light tracking-10 min-h-40 word-break"
-            :value="pokemon1.moves" readonly></textarea>
-        </div>
-        <div class="bg-gradient-to-r from-custom-blue to-custom-purple p-[0.7px] rounded-md w-full sm:w-64 lg:w-96">
-          <textarea type="text"
-          
-            class="p-2 bg-[#111111] rounded-md focus:outline-none sm:w-full text-center text-lg font-light tracking-10 min-h-40 word-break"
-            :value="pokemon2.moves" readonly></textarea>
+        <div class="flex flex-col sm:flex-row w-full gap-1 sm:gap-4">
+          <div class="bg-gradient-to-r from-custom-blue to-custom-purple p-[0.7px] rounded-md w-full sm:w-64 lg:w-96">
+            <textarea type="text"
+              class="p-2 bg-[#111111] rounded-md focus:outline-none sm:w-full text-center text-[12px] sm:text-base font-light tracking-0 sm:tracking-10 w-full min-h-40 word-break"
+              :value="pokemon1.moves" readonly></textarea>
+          </div>
+          <div class="bg-gradient-to-r from-custom-blue to-custom-purple p-[0.7px] rounded-md w-full sm:w-64 lg:w-96">
+            <textarea type="text"
+              class="p-2 bg-[#111111] rounded-md focus:outline-none sm:w-full text-center text-[12px] sm:text-base font-light tracking-0 sm:tracking-10 w-full min-h-40 word-break"
+              :value="pokemon2.moves" readonly></textarea>
+          </div>
         </div>
       </form>
     </div>

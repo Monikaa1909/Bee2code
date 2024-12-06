@@ -27,8 +27,10 @@ const router = createRouter({
       component: () => import('../views/PokemonComparisionView.vue'),
       beforeEnter: (to, from, next) => {
         const pokemonToCompareStore = usePokemonToCompareStore()
-        console.log('before' + from.name == null)
-        if (from.name == null) {
+
+        console.log('before' )
+        console.log(from.name == undefined)
+        if (from.name == undefined) {
           next({
             path: '/example/home',
             query: { error: 'Select exactly 2 Pokémon to compare!' },

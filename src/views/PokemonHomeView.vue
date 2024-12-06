@@ -72,8 +72,9 @@ onMounted(() => {
   if (!pokemonStore.pokemon.length > 0) loadPokemon()
   else loadedPokemon.value = pokemonStore.pokemon
 
+  console.log(route.query.error)
   if (route.query.error) {
-    isAlertOpen.value = true /
+    isAlertOpen.value = true 
       router.replace({ query: { ...route.query, error: undefined } })
   }
 })
@@ -133,7 +134,7 @@ function nextPage(page) {
 </script>
 
 <template>
-  <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 md:p-24 xl:px-64 text-white">
+  <div class="bg-[#111111] relative min-h-screen h-full w-full p-4 py-24 md:p-24 xl:px-64 text-white">
 
     <Comparison @compare="compare" @delete-pokemon="deletePokemonToCompare"
       :pokemon-to-compare="pokemonToCompareStore.pokemonToCompare">
@@ -141,7 +142,7 @@ function nextPage(page) {
     </Comparison>
 
     <div @click="isAlertOpen = false" v-if="isAlertOpen"
-      class="fixed inset-0 flex items-center justify-center bg-gray-500/75">
+      class="fixed inset-0 flex items-center justify-center px-4 bg-gray-500/75">
       <div
         class="bg-[#111111] p-6 rounded-lg shadow-lg w-full max-w-96 sm:w-96 text-center flex flex-col items-center justify-center gap-8">
         <p class="rounded-lg p-2 w-full text-center text-xl font-semibold tracking-10">
@@ -154,7 +155,7 @@ function nextPage(page) {
     </div>
 
     <p
-      class="px-24 text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm w-full break-words pb-24">
+      class="md:px-24 text-2xl md:text-5xl font-extrabold tracking-20 text-center bg-gradient-to-r from-custom-blue to-custom-purple bg-clip-text text-transparent text-shadow-blue-sm w-full break-words pb-24">
       WATCH AND COMPARE POKEMON
     </p>
 
@@ -174,34 +175,35 @@ function nextPage(page) {
 
     <div
       class="grid grid-cols-4 w-full bg-gradient-to-r from-custom-blue/50 to-custom-purple/50 shadow-blue-sm bg-opacity-50 rounded-lg py-4">
-      <div class="text-center text-sm font-semibold tracking-10">NAMES</div>
-      <div class="text-center text-sm font-semibold tracking-10">TYPES</div>
-      <div class="text-center text-sm font-semibold tracking-10">ABILITIES</div>
-      <div class="text-center text-sm font-semibold tracking-10">ACTIONS</div>
+      <div class="text-center text-sm font-semibold sm:tracking-10">NAMES</div>
+      <div class="text-center text-sm font-semibold sm:tracking-10">TYPES</div>
+      <div class="text-center text-sm font-semibold sm:tracking-10">ABILITIES</div>
+      <div class="text-center text-sm font-semibold sm:tracking-10">ACTIONS</div>
     </div>
 
     <div v-for="pokemon in paginatedPokemon" :key="pokemon.name"
-      class="grid grid-cols-4 items-center border-b-[0.7px] border-b-custom-blue/50">
-      <div class="flex items-center justify-center gap-2">
-        <img class="h-10 w-10" :src="pokemon.image" />
-        <p class="text-center text-lg font-light tracking-10">{{ pokemon.name }}</p>
+      class="grid grid-cols-4 items-center border-b-[0.7px] border-b-custom-blue/50 w-full">
+      <div class="flex items-center justify-center gap-2 w-full">
+        <img class="hidden sm:block h-10 w-10" :src="pokemon.image" />
+        <p class="text-center text-xs sm:text-lg font-light tracking-0 sm:tracking-10 break-words w-full">{{ pokemon.name }}</p>
       </div>
-      <div class="flex items-center justify-center gap-2">
-        <p class="text-center text-lg font-light tracking-10 min-w-20">{{ pokemon.types[0] }}</p>
-        <SmallButton :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
+      <div class="flex sm:flex-row flex-col items-center justify-center sm:gap-2 gap-1 w-full">
+        <p class="text-center text-xs sm:text-lg font-light tracking-0 sm:tracking-10 break-words sm:min-w-20">{{ pokemon.types[0] }}</p>
+        <SmallButton 
+          :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
           @click="openModal('ALL TYPES', pokemon.types)">+{{ pokemon.types.length - 1 }}</SmallButton>
       </div>
-      <div class="flex items-center justify-center gap-2">
-        <p class="text-center text-lg font-light tracking-10  min-w-40">{{ pokemon.abilities[0] }}</p>
+      <div class="flex sm:flex-row flex-col items-center justify-center gap-1 sm:gap-2 w-full">
+        <p class="text-center text-xs sm:text-lg font-light tracking-0 sm:tracking-10 break-words sm:min-w-32 lg:min-w-40">{{ pokemon.abilities[0] }}</p>
         <SmallButton :class="{ 'invisible': pokemon.types.length - 1 === 0 }"
           @click="openModal('ALL ABILITIES', pokemon.abilities)">+{{ pokemon.abilities.length - 1 }}</SmallButton>
       </div>
-      <div class="flex flex-col items-center justify-center gap-1 py-2">
-        <SmallButton @click="seeDetails(pokemon)" class="w-28">DETAILS</SmallButton>
+      <div class="flex flex-col items-center justify-center gap-1 py-1 sm:py-2 w-full">
+        <SmallButton @click="seeDetails(pokemon)" class="w-full sm:w-28">DETAILS</SmallButton>
         <button @click="addPokemonToCompare(pokemon)"
           :class="{ 'cursor-default bg-custom-dark-gray hover:bg-custom-dark-gray shadow-none': !isAddingActive(pokemon) }"
-          class="comparasion3 w-28 bg-custom-blue/50 hover:bg-custom-blue/70 py-1 px-2 rounded-md shadow-blue-sm">
-          <p class="text-xs font-light">
+          class="comparasion3 w-full sm:w-28 bg-custom-blue/50 hover:bg-custom-blue/70 p-0 sm:py-1 sm:px-2 rounded-md shadow-blue-sm">
+          <p class="text-[10px] sm:text-xs font-light w-full break-words">
             ADD POKEMON
           </p>
         </button>
